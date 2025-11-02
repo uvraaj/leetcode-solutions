@@ -6,6 +6,7 @@ from Activity start join Activity end
 on 
     start.machine_id = end.machine_id and
     start.process_id = end.process_id and
+    -- This is the most important part. After finding rows for the same task, this filter says: "Only create a final pair if the row from the a1 copy is a 'start' event AND the row from the a2 copy is an 'end' event."
     start.activity_type = 'start' and
     end.activity_type = 'end'
 group by start.machine_id

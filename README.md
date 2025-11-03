@@ -1,3 +1,3 @@
 # leetcode-solutions
 
-[![repo_lang](https://skillicons.dev/icons?i=java,)](#)
+[![repo_lang](https://skillicons.dev/icons?i=java,mysql)](#)

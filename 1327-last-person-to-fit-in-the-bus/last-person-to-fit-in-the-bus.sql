@@ -1,10 +1,13 @@
-WITH cte AS
-(
-    SELECT person_name, SUM(weight) OVER(ORDER BY turn ASC) AS sum
-    FROM Queue
+with cte as(
+    select 
+        person_name,
+        SUM(weight) over (order by turn asc) as sum 
+    from
+        Queue
 )
-SELECT person_name
-FROM cte
-WHERE sum <= 1000
-ORDER BY sum DESC
-LIMIT 1;
+
+select person_name
+from cte
+where sum <= 1000 
+order by sum desc 
+limit 1; 

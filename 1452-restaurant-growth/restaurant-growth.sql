@@ -1,22 +1,24 @@
-# Write your MySQL query statement below
-SELECT
+with CTE_daily_sales as (
+    select visited_on, sum(amount) as daily_amount
+    from Customer
+    group by visited_on 
+), 
+CTE_window_data as(
+    select
+        visited_on,
+        sum(daily_amount) over (order by visited_on rows between 6 preceding and current row) as weekly_sum,
+        round(sum(daily_amount) over (order by visited_on rows between 6 preceding and current row) / 7.0, 2) as average_amount,
+        lag(visited_on, 6) over (order by visited_on) as lag_date
+    from CTE_daily_sales
+)
+
+select
     visited_on,
-    (
-        SELECT SUM(amount)
-        FROM customer
-        WHERE visited_on BETWEEN DATE_SUB(c.visited_on, INTERVAL 6 DAY) AND c.visited_on
-    ) AS amount,
-    ROUND(
-        (
-            SELECT SUM(amount) / 7
-            FROM customer
-            WHERE visited_on BETWEEN DATE_SUB(c.visited_on, INTERVAL 6 DAY) AND c.visited_on
-        ),
-        2
-    ) AS average_amount
-FROM customer c
-WHERE visited_on >= (
-        SELECT DATE_ADD(MIN(visited_on), INTERVAL 6 DAY)
-        FROM customer
-    )
-GROUP BY visited_on;
+    weekly_sum as amount,
+    average_amount
+from 
+    CTE_window_data
+where 
+    lag_date is not null
+order by
+    visited_on;

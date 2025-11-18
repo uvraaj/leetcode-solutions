@@ -10,21 +10,13 @@
  */
 class Solution {
     public ListNode deleteDuplicates(ListNode head) {
-
-        if (head == null || head.next == null) {
-            return head;
-        }
-
-        ListNode curr = head;
-
-        while (curr != null && curr.next != null) {
-            if (curr.val == curr.next.val) {
-                curr.next = curr.next.next;
-            } else {
-                //move forward
-                curr = curr.next;
-            }
-        }
-        return head;
+        // Base case
+        if (head == null || head.next == null) return head;
+        
+        // Recursive call to process the rest of the list
+        head.next = deleteDuplicates(head.next);
+        
+        // Check if current node is a duplicate of the next one
+        return (head.val == head.next.val) ? head.next : head;
     }
 }

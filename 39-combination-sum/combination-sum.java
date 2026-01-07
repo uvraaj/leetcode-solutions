@@ -11,7 +11,7 @@ class Solution {
         //base case: if checked for all elements of the candidates array
         if (curr_index == candidates.length) {
             if (target == 0) {
-                //if target is zero return empty list
+                //we have found the required combinations (as we are subtracting)
                 result.add(new ArrayList<>(tempList));
             }
             return;

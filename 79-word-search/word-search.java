@@ -1,49 +1,72 @@
 class Solution {
+    static int[][] dir = {{0,1},{0,-1},{1,0},{-1,0}};
+
     public boolean exist(char[][] board, String word) {
-        //number of rows
-        int rows = board.length;
+        // frequency pruning
+        if(!canForm(board,word)) return false;
 
-        //number of columns
-        int columns = board[0].length;
+        // reverse word pruning
+        if (count(word.charAt(0),board) > count(word.charAt(word.length()-1),board)) {
+            word = new StringBuilder(word).reverse().toString();
+        }
 
-        //exploring every possiblity
-        for (int i = 0 ; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                //search
-                if (dfs(board, word, i, j, 0)) {
-                    return true;
+        for(int i=0 ; i<board.length ; i++){
+            for(int j=0 ; j<board[0].length ; j++){
+                if(board[i][j] == word.charAt(0)){
+                    boolean ans = dfs(board,i,j,word,0);
+                    if(ans == true) return true;
                 }
             }
         }
-        //no match found
         return false;
     }
 
-    private boolean dfs(char[][] board, String word, int i, int j, int curr_index) {
-        //match found
-        if (curr_index == word.length()) return true;
+    static boolean dfs(char[][] board,int i,int j, String word,int idx){
+        if(idx == word.length()) return true;
 
-        //boundary and mismatch check
-        if (i < 0 ||
-            j < 0 ||
-            i >= board.length ||
-            j >= board[0].length ||
-            board[i][j] != word.charAt(curr_index)) {
-                return false;
+        if(i<0||j<0||i>=board.length||j>=board[0].length||board[i][j]!=word.charAt(idx)){
+            return false;
+        }
+
+        char ch = board[i][j];
+        board[i][j] = '$';
+
+        for(int[] d : dir){
+            int r = i + d[0];
+            int c = j + d[1];
+
+            boolean ans = dfs(board,r,c,word,idx+1);
+            if(ans == true) return true;
+        }
+
+        //backtrack
+        board[i][j] = ch;
+        return false;
+    }
+
+    static boolean canForm(char[][] board, String word){
+        int[] freq = new int[128];
+        for(char[] row : board){
+            for(char ch : row){
+                freq[ch]++;
             }
+        }
 
-        //if char matched then store it temporarily
-        char temp = board[i][j];
-        board[i][j] = '#';
+        for(char ch : word.toCharArray()){
+            freq[ch]--;
+            if(freq[ch] < 0) return false;
+        }
 
-        //explore next possible directions
-        boolean found = dfs(board, word, i+1, j, curr_index+1) ||
-                        dfs(board, word, i-1, j, curr_index+1) ||
-                        dfs(board, word, i, j+1, curr_index+1) ||
-                        dfs(board, word, i, j-1, curr_index+1);
+        return true;
+    }
 
-        //backtrack and restore
-        board[i][j] = temp;
-        return found;
+    static int count(char c, char[][] board) {
+        int count = 0;
+        for (char[] row : board) {
+            for (char letter : row) {
+                if (letter == c) count++;
+            }
+        }
+        return count;
     }
 }

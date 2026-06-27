@@ -1,13 +1,17 @@
 class Solution {
-    public void rotate(int[][] mat) {
-        int n = mat.length, k = n - 1;
-        for (int i = 0; i < n >> 1; i++)
-            for (int j = i; j < k - i; j++) {
-                int t = mat[i][j];
-                mat[i][j] = mat[k - j][i];
-                mat[k - j][i] = mat[k - i][k - j];
-                mat[k - i][k - j] = mat[j][k - i];
-                mat[j][k - i] = t;
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        int boundary = n-1;
+
+        for (int i = 0; i < n/2; i++) { //this loops keeps the track till the centre of the matrix
+            for (int j = i; j < boundary-i; j++) {  // this prevents double swaping
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[boundary-j][i];
+                matrix[boundary-j][i] = matrix[boundary-i][boundary - j];
+                matrix[boundary-i][boundary - j] = matrix[j][boundary-i];
+                matrix[j][boundary-i] = temp;
             }
+        }
+
     }
 }

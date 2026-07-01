@@ -1,33 +1,52 @@
 class Solution {
     public List<List<Integer>> threeSum(int[] nums) {
-        Set<List<Integer>> triple_set = new HashSet<>(); //set to store unique triplets
         int n = nums.length;
 
+        //creating a list of lists to store the result
+        List<List<Integer>> result = new ArrayList<>();
+
+        //sort the array, to apply the two pointer approach
+        Arrays.sort(nums);
+
         for (int i = 0; i < n; i++) {
-            Set<Integer> hash_set = new HashSet<>(); //set to store elements seen so far
+            //skip the duplicate
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;
 
-            for (int j = i+1; j < n; j++) {
-                //calculating the third element, needed to form the triplet
-                int third = -(nums[i] + nums[j]);
+            //two pointers approch
+            int j = i + 1;
+            int k = n - 1;
 
-                if (hash_set.contains(third)) {
-                    //found the triplet
+            while (j < k) {
+
+                int sum = nums[i] + nums[j] + nums[k];
+
+                if (sum < 0)
+                    j++;
+                else if (sum > 0)
+                    k--;
+                else {
+                    //found a triplet, sum == 0;
                     List<Integer> temp = new ArrayList<>();
                     temp.add(nums[i]);
                     temp.add(nums[j]);
-                    temp.add(third);
+                    temp.add(nums[k]);
 
-                    //sort the triplets to ensure uniqueness in set
-                    Collections.sort(temp);
-                    triple_set.add(temp);
+                    //storing this triplet in the resultant list
+                    result.add(temp);
+
+                    //moving forward, to find another pair
+                    j++;
+                    k--;
+
+                    //skip the duplicates
+                    while (j < k && nums[j] == nums[j - 1])
+                        j++;
+                    while (j < k && nums[k] == nums[k + 1])
+                        k--;
                 }
-                //if it does not contains, then add it for future checks
-                hash_set.add(nums[j]);
             }
         }
-
-        //converting the set into the List
-        List<List<Integer>> ans = new ArrayList<>(triple_set);
-        return ans;
+        return result;
     }
 }

@@ -1,24 +1,23 @@
 class Solution {
+    List<String> res = new ArrayList<>();
+
     public List<String> generateParenthesis(int n) {
-        List<String> result = new ArrayList<>();
+        if (n-- == 1) return List.of("()");
+        dfs(n, n, "(");
 
-        generate_parentheses(n, 0, 0, "", result);
-
-        return result;
+        return res;
     }
-    private void generate_parentheses(int total_pairs, int opening_parentheses, int closing_parentheses, String temp, List<String> result) {
-        //base case
-        if (temp.length() == total_pairs * 2) {
-            result.add(temp);
+
+    private void dfs(int O, int C, String s) {
+        if (O == 0 && C == 0) {
+            res.add(s + ")");
             return;
         }
 
-        if (opening_parentheses < total_pairs) {
-            generate_parentheses(total_pairs,opening_parentheses + 1, closing_parentheses, temp + '(', result);
-        }
+        if (O > 0)
+            dfs(O - 1, C, s + "(");
 
-        if (closing_parentheses < opening_parentheses) {
-            generate_parentheses(total_pairs,opening_parentheses, closing_parentheses + 1, temp + ')', result);
-        }
+        if (C >= O)
+            dfs(O, C - 1, s + ")");
     }
 }
